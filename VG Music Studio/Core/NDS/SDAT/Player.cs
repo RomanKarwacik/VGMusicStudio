@@ -1672,7 +1672,7 @@ namespace Kermalis.VGMusicStudio.Core.NDS.SDAT
                                     ElapsedTicks++;
                                 }
                             }
-                            if (track.Stopped || track.Channels.Count != 0)
+                            if (!track.Stopped || track.Channels.Count != 0)
                             {
                                 allDone = false;
                             }
