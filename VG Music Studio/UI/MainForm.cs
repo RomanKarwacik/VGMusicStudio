@@ -499,7 +499,7 @@ namespace Kermalis.VGMusicStudio.UI
                 foreach (Config.Song s in pl.Songs) {
                     try {
                         Engine.Instance.Player.LoadSong(s.Index);
-                        Engine.Instance.Player.Record(s.Index + ".wav");
+                        Engine.Instance.Player.Record(pl.Name + "_" + s.Index + ".wav");
                     }
                     catch (Exception ex)
                     {
@@ -507,7 +507,7 @@ namespace Kermalis.VGMusicStudio.UI
                     }
                 }
             }
-            FlexibleMessageBox.Show(string.Format(Strings.SuccessSaveWAV, "Alle"), Text);
+            FlexibleMessageBox.Show(Strings.SuccessSaveAllWAV, Text);
             
             Engine.Instance.Player.ShouldFadeOut = oldFade;
             Engine.Instance.Player.NumLoops = oldLoops;

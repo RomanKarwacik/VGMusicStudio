@@ -610,6 +610,15 @@ namespace Kermalis.VGMusicStudio.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die All WAVs have been exported! ähnelt.
+        /// </summary>
+        internal static string SuccessSaveAllWAV {
+            get {
+                return ResourceManager.GetString("SuccessSaveAllWAV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die MIDI saved to {0}. ähnelt.
         /// </summary>
         internal static string SuccessSaveMIDI {

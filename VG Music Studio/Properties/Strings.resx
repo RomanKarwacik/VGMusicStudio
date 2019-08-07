@@ -350,4 +350,7 @@
   <data name="MenuSaveAllWAV" xml:space="preserve">
     <value>Export All Songs as WAV</value>
   </data>
+  <data name="SuccessSaveAllWAV" xml:space="preserve">
+    <value>All WAVs have been exported!</value>
+  </data>
 </root>
