@@ -35,7 +35,7 @@ namespace Kermalis.VGMusicStudio.UI
 
         private readonly MenuStrip mainMenu;
         private readonly ToolStripMenuItem fileItem, openDSEItem, openMLSSItem, openMP2KItem, openSDATItem,
-            dataItem, trackViewerItem, exportMIDIItem, exportWAVItem,
+            dataItem, trackViewerItem, exportMIDIItem, exportWAVItem, exportAllWAVItem,
             playlistItem, endPlaylistItem;
         private readonly Timer timer;
         private readonly ThemedNumeric songNumerical;
@@ -83,8 +83,10 @@ namespace Kermalis.VGMusicStudio.UI
             exportMIDIItem.Click += ExportMIDI;
             exportWAVItem = new ToolStripMenuItem { Enabled = false, Text = Strings.MenuSaveWAV };
             exportWAVItem.Click += ExportWAV;
+            exportAllWAVItem = new ToolStripMenuItem { Enabled = false, Text = Strings.MenuSaveAllWAV };
+            exportAllWAVItem.Click += ExportAllWAV;
             dataItem = new ToolStripMenuItem { Text = Strings.MenuData };
-            dataItem.DropDownItems.AddRange(new ToolStripItem[] { trackViewerItem, exportMIDIItem, exportWAVItem });
+            dataItem.DropDownItems.AddRange(new ToolStripItem[] { trackViewerItem, exportMIDIItem, exportWAVItem, exportAllWAVItem });
 
             // Playlist Menu
             endPlaylistItem = new ToolStripMenuItem { Enabled = false, Text = Strings.MenuEndPlaylist };
@@ -236,6 +238,10 @@ namespace Kermalis.VGMusicStudio.UI
             }
             int numTracks = (Engine.Instance.Player.Events?.Length).GetValueOrDefault();
             positionBar.Enabled = exportWAVItem.Enabled = success && numTracks > 0;
+            if (success)
+            {
+                exportAllWAVItem.Enabled = true;
+            }
             exportMIDIItem.Enabled = success && Engine.Instance.Type == Engine.EngineType.GBA_MP2K && numTracks > 0;
 
             autoplay = true;
@@ -480,6 +486,32 @@ namespace Kermalis.VGMusicStudio.UI
                 Engine.Instance.Player.NumLoops = oldLoops;
                 stopUI = false;
             }
+        }
+
+        private void ExportAllWAV(object sender, EventArgs e)
+        {
+            Stop();
+            bool oldFade = Engine.Instance.Player.ShouldFadeOut;
+            long oldLoops = Engine.Instance.Player.NumLoops;
+            Engine.Instance.Player.ShouldFadeOut = true;
+            Engine.Instance.Player.NumLoops = GlobalConfig.Instance.PlaylistSongLoops;
+            foreach (Config.Playlist pl in Engine.Instance.Config.Playlists) {
+                foreach (Config.Song s in pl.Songs) {
+                    try {
+                        Engine.Instance.Player.LoadSong(s.Index);
+                        Engine.Instance.Player.Record(s.Index + ".wav");
+                    }
+                    catch (Exception ex)
+                    {
+                        FlexibleMessageBox.Show(ex.Message, Strings.ErrorSaveWAV);
+                    }
+                }
+            }
+            FlexibleMessageBox.Show(string.Format(Strings.SuccessSaveWAV, "Alle"), Text);
+            
+            Engine.Instance.Player.ShouldFadeOut = oldFade;
+            Engine.Instance.Player.NumLoops = oldLoops;
+            stopUI = false;
         }
 
         public void LetUIKnowPlayerIsPlaying()
